@@ -233,19 +233,20 @@ export default {
         }))
         var geolocation = new AMap.Geolocation(options);
         map.addControl(geolocation);
-        //geolocation.getCurrentPosition()
+        geolocation.getCurrentPosition()
       });  
-
-      console.log(this.path[0])
       if (this.roadPath.length) {  
-        let loadPath=[]
+        let loadPath=[];
         this.roadPath.forEach((kpath,kindex)=>{
           let{lng,lat}=kpath
-          loadPath.push(lng+'&'+lat)
+          if(lng&&lat){
+            loadPath.push(lng+'&'+lat)
+          }
         })
+        let flag=false;
         this.path.forEach((item, index) => {
           let backpath=item.position[0]+'&'+item.position[1];
-          if(loadPath.indexOf(backpath)>-1){
+          if(loadPath.length>0&&loadPath.indexOf(backpath)>-1){
             var marker = new AMap.Marker({
               map: map,
               icon: new AMap.Icon({            
@@ -256,9 +257,31 @@ export default {
               size: new AMap.Size(25,28),
               position: [item.position[0], item.position[1]],
               offset: new AMap.Pixel(-13, -30)
+            });            
+            markers.push(marker)
+            marker.setLabel({
+              offset: new AMap.Pixel(25, 28),
+              content: item.label
             });
-          }else{
-            return
+            marker.on("click", item => {
+              for (var i = 0; i < markers.length; i++) {
+                  markers[i].setIcon(new AMap.Icon({            
+                  image: scenicIcon,
+                  size: new AMap.Size(25,28),  //图标大小
+                  imageSize: new AMap.Size(25,28),
+                offset: new AMap.Pixel(-13, -30),
+                }));
+              }
+              let con = item.target.Uh.label.content;
+              marker.setIcon( new AMap.Icon({            
+                  image: scenicActiveIcon,
+                  size: new AMap.Size(25,28),  //图标大小
+                  imageSize: new AMap.Size(25,28),
+                offset: new AMap.Pixel(-13, -30),
+                }),)
+              this.showModel(con,item.target.Uh.position);    
+            });
+            flag=true
           }
           // if (item.label.indexOf("卡戳文化艺术馆") != -1) {
           //   //规划路线
@@ -286,47 +309,25 @@ export default {
           //     offset: new AMap.Pixel(-13, -30)
           //     });
           // }
-          markers.push(marker)
-          marker.setLabel({
-            offset: new AMap.Pixel(25, 28),
-            content: item.label
-          });
-          marker.on("click", item => {
-            for (var i = 0; i < markers.length; i++) {
-                markers[i].setIcon(new AMap.Icon({            
-                image: scenicIcon,
-                size: new AMap.Size(25,28),  //图标大小
-                imageSize: new AMap.Size(25,28),
-              offset: new AMap.Pixel(-13, -30),
-              }));
-            }
-            let con = item.target.Uh.label.content;
-            marker.setIcon( new AMap.Icon({            
-                image: scenicActiveIcon,
-                size: new AMap.Size(25,28),  //图标大小
-                imageSize: new AMap.Size(25,28),
-              offset: new AMap.Pixel(-13, -30),
-              }),)
-            this.showModel(con,item.target.Uh.position);          
-            this.drawMap(item.lnglat.lng,item.lnglat.lat)
-          });
-        });
-        let bezierCurve = new AMap.BezierCurve({
-          path: this.roadPath,
-          isOutline: true,
-          outlineColor: "#fff",
-          borderWeight: 0,
-          strokeColor: "#666",
-          strokeOpacity: 1,
-          strokeWeight: 2,
-          strokeStyle: "dashed",
-          strokeDasharray: [10, 10],
-          lineJoin: "round",
-          lineCap: "round",
-          zIndex: 50
-        });
-        bezierCurve.setMap(map);
-        map.setFitView([bezierCurve]);
+        });    
+        if(flag){   
+          let bezierCurve = new AMap.BezierCurve({
+              path: this.roadPath,
+              isOutline: true,
+              outlineColor: "#fff",
+              borderWeight: 0,
+              strokeColor: "#666",
+              strokeOpacity: 1,
+              strokeWeight: 2,
+              strokeStyle: "dashed",
+              strokeDasharray: [10, 10],
+              lineJoin: "round",
+              lineCap: "round",
+              zIndex: 50
+            });
+            bezierCurve.setMap(map);
+            map.setFitView([bezierCurve]);
+        }      
       } else {
         this.$vux.toast.text("暂无推荐路线", "middle");
         setTimeout(() => {
