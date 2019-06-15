@@ -78,7 +78,7 @@ export default [
     component: resolve => require(['@/components/pages/kachuoplay/toolslist/TakeAway'], resolve),
   },
   {
-    path: '/servicesurround',
+    path: '/servicesurround', 
     name: 'servicesurround',
     component: resolve => require(['@/components/pages/kachuoplay/toolslist/ServiceSurround'], resolve),
   },

@@ -52,12 +52,8 @@ export default {
 
   methods: {
     getUserClick() {
-      let type = this.$route.query.type;
-      if (type) {
-        this.getMapCenterPosition(type);
-      } else {
-        this.getMapCenterPosition("1");
-      }
+      let type = this.$route.query.type||'1';
+      this.getMapCenterPosition(type)
     },
     showModel(id) {
       this.$refs.videoWrap.getScenicDetails(id);
@@ -65,16 +61,6 @@ export default {
     // 添加商家标记
     getMerchantsData(type) {
       let markerArr = [];
-      
-      // let marker = new AMap.Marker({
-      //     icon: new AMap.Icon({            
-      //       image: inlocationIcon,
-      //       size: new AMap.Size(25,28),  //图标大小
-      //       imageSize: new AMap.Size(25,28)
-      //     }),
-      //     position:this.mapCenter,
-      //     offset: new AMap.Pixel(-13, -30)
-      // });
       getScenicMerchants({
         scenicid: sessionStorage.getItem("currentScenic"),
         type: type
@@ -92,6 +78,7 @@ export default {
                   id: res.data[i].id
                 });
               }
+               this.showMarker(markerArr,type); 
             } else {
               this.$vux.toast.show({
                 type:"text",
@@ -102,10 +89,6 @@ export default {
               });
             }
           }
-          if (markerArr.length) {
-            this.showMarker(markerArr,type);            
-           //this.drawMap(markerArr[0].position[0],markerArr[0].position[1])
-          }
         })
         .catch(err => {
           console.log(err);
@@ -115,16 +98,6 @@ export default {
       let id = sessionStorage.getItem("currentScenic");
       getCurrentPositionByCurrentScenicId(id).then(res => {
           this.mapCenter = res.split(",");
-          let setmarker = new AMap.Marker({
-            icon: new AMap.Icon({            
-              image: inlocationIcon,
-              size: new AMap.Size(20,28),  //图标大小
-              imageSize: new AMap.Size(20,28)
-            }),
-            position:this.mapCenter,
-            offset: new AMap.Pixel(-13, -30)
-          });
-          setmarker.setMap(map);
           this.init(type);
         })
         .catch(err => {
@@ -150,73 +123,74 @@ export default {
       }
       markArr.forEach((item, index) => {
         marker = new AMap.Marker({
-          map: map,
           icon: new AMap.Icon({            
             image: normalIcon,
-            size: new AMap.Size(20,22),  //图标大小
-            imageSize: new AMap.Size(20,22),
-            offset: new AMap.Pixel(-13, -30),
+            size: new AMap.Size(35,40),  //图标大小
+            imageSize: new AMap.Size(35,40),
           }),
+          offset: new AMap.Pixel(-13, -30),
           position: [item.position[0], item.position[1]],
         });    
         markers.push(marker)    
         marker.setLabel({
-          offset: new AMap.Pixel(15, 18),
-          content: item.label,
+          offset: new AMap.Pixel(10, 25),
+          content:`<div>${ item.label }</div>`,
           id: item.id
-        });        
+        });
+        map.add(marker);        
         marker.on("click", item => {
-          for (var i = 0; i < markers.length; i++) {
-              markers[i].setIcon(new AMap.Icon({            
-              image: normalIcon,
-              size: new AMap.Size(20,22),  //图标大小
-              imageSize: new AMap.Size(10,22),
-              offset: new AMap.Pixel(-13, -30),
-            }));
-          }
-          marker.setIcon( new AMap.Icon({            
-            image: activeIcon,
-            size: new AMap.Size(25,28),  //图标大小
-            imageSize: new AMap.Size(25,28),
-            offset: new AMap.Pixel(-13, -30),
-          }),)
+          // for (var i = 0; i < markers.length; i++) {
+          //     markers[i].setIcon(new AMap.Icon({            
+          //     image: normalIcon,
+          //     size: new AMap.Size(10,18),  //图标大小
+          //     imageSize: new AMap.Size(10,28)
+          //   }));
+          // }
+          // marker.setIcon( new AMap.Icon({            
+          //   image: activeIcon,
+          //   size: new AMap.Size(35,40),  //图标大小
+          //   imageSize: new AMap.Size(35,40),
+          // }),)
           this.showModel(item.target.Uh.label.id);
-          this.drawMap(item.lnglat.lng,item.lnglat.lat)
+          // this.drawMap(item.lnglat.lng,item.lnglat.lat)
         });
          map.setFitView();
       });
     },
 
-    //绘制路线
-    drawMap(Tlng,Tlat) { // 专车--画地图
-         //构造路线导航类
+    // //绘制路线
+    // drawMap(Tlng,Tlat) { // 专车--画地图
+    //      //构造路线导航类
         
-        if(walking){
-          //调用clear()函数清除上一次结果，可以清除地图上绘制的路线以及路径文本结果
-            walking.clear();         
-        }
-        walking = new AMap.Walking({
-          map: map,   
-          hideMarkers: false,
-          isOutline: true,
-          outlineColor: '#ffeeee',
-          autoFitView: true
-        });
-        walking.search([this.mapCenter[0], this.mapCenter[1]], [Tlng, Tlat], function(status, result) {
-            // result即是对应的步行路线数据信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_WalkingResult
-            if (status === 'complete') {
-                console.log('绘制路线完成')
-            } else {
-                console.log('获取数据失败：' + result)
-            }
-        });
-    },
+    //     if(walking){
+    //       //调用clear()函数清除上一次结果，可以清除地图上绘制的路线以及路径文本结果
+    //         walking.clear();         
+    //     }
+    //     walking = new AMap.Walking({
+    //       map: map,   
+    //       hideMarkers: false,
+    //       isOutline: true,
+    //       outlineColor: '#ffeeee',
+    //       autoFitView: true
+    //     });
+    //     walking.search([this.mapCenter[0], this.mapCenter[1]], [Tlng, Tlat], function(status, result) {
+    //         // result即是对应的步行路线数据信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_WalkingResult
+    //         if (status === 'complete') {
+    //             console.log('绘制路线完成')
+    //         } else {
+    //             console.log('获取数据失败：' + result)
+    //         }
+    //     });
+    // },
 
 
 
     init(type) {
       //获取地图初始化中心点
       // 初始化地图
+      if(map){
+        map.clearMap();
+      }
       map = new AMap.Map("container", {
         center: this.mapCenter,
         resizeEnable: true,
@@ -232,23 +206,26 @@ export default {
         'showButton': true,//是否显示定位按钮
         'buttonPosition': 'LB',//定位按钮的位置
         'buttonDom':`<img src=${locationIcon} style="width:36px;height:36px"/>`,
-        /* LT LB RT RB */
         'buttonOffset': new AMap.Pixel(10, 50),//定位按钮距离对应角落的距离
         'showMarker': true,//是否显示定位点
         'markerOptions':{//自定义定位点样式，同Marker的Options
           'offset': new AMap.Pixel(-18, -36),
-           'content':'<img src="https://a.amap.com/jsapi_demos/static/resource/img/user.png" style="width:25px;height:25px"/>'
+          'content':`<img src=${inlocationIcon} style="width:25px;height:32px"/>`
         },
       }
-      map.clearMap();
-      AMap.plugin(["AMap.ControlBar"],function(){
-        var controlBar = new AMap.ControlBar()
-        map.addControl(controlBar)
-      })
-      map.plugin(["AMap.ToolBar", "AMap.Scale","AMap.Geolocation"], function() {
-        map.addControl(new AMap.ToolBar());
+      map.plugin(["AMap.ToolBar", "AMap.Scale","AMap.Geolocation","AMap.ControlBar"], function() {
+        map.addControl(new AMap.ToolBar({
+            // 简易缩放模式，默认为 false
+            liteStyle: true
+        }));
         map.addControl(new AMap.Scale());
-        map.addControl(new AMap.Geolocation(options));
+        map.addControl(new AMap.ControlBar({
+          showControlButton:true,
+          showZoomBar:false,
+        }))
+        var geolocation = new AMap.Geolocation(options);
+        map.addControl(geolocation);
+        geolocation.getCurrentPosition()
       });      
       // 获取标记点
       this.getMerchantsData(type);
