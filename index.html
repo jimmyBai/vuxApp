@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="theme-color" content="#000000">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>卡戳 APPX</title>
+</head>
+<style>
+  html,
+  body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    padding: constant(safe-area-inset-top) constant(safe-area-inset-right) constant(safe-area-inset-bottom) constant(safe-area-inset-left);
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+</style>
+<script>
+  function createCordovaScript() {
+    if (window.location.protocol === 'file:' || window.location.port === '3000') {
+      var cordovaScript = document.createElement('script');
+      cordovaScript.setAttribute('type', 'text/javascript');
+      cordovaScript.setAttribute('src', 'cordova.js');
+      document.body.appendChild(cordovaScript);
+    }
+  }
+
+</script>
+
+<body>
+  <div id="app-box"></div>
+</body>
+
+<script>
+  window.onload = function () {
+    createCordovaScript();
+  }
+</script>
+
+</html>

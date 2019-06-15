@@ -1,0 +1,62 @@
+<template>
+  <div class="release-video-wrap">
+    <Header
+      :titleContent="TitleObjData.titleContent"
+      :showLeftBack="TitleObjData.showLeftBack"
+      :showRightMore="TitleObjData.showRightMore"
+    ></Header>
+    <div class="release-video-content-wrap" :style="contentHeight">
+      <TextArea :showAddress="showLoactal"></TextArea>
+    </div>
+  </div>
+</template>
+
+<script>
+
+import Header from "@/components/common/Header";
+import TextArea from "@/components/common/TextArea";
+
+export default {
+  name: "",
+  props: [""],
+  data() {
+    return {
+      showLoactal:true,
+      TitleObjData: {
+        titleContent: "发布",
+        showLeftBack: true,
+        showRightMore: false
+      }
+    };
+  },
+
+  components: {
+    Header,
+    TextArea
+  },
+
+  computed: {
+    contentHeight() {
+      return { height: document.documentElement.clientHeight - 50 + "px" };
+    }
+  },
+
+  beforeMount() {},
+
+  mounted() {},
+
+  methods: {},
+
+  watch: {}
+};
+</script>
+<style lang='css' scoped>
+.release-video-content-wrap {
+  width: 100%;
+  overflow: hidden;
+  overflow-y: scroll;
+  padding: 0 15px;
+  box-sizing: border-box;
+  margin-top: 50px;
+}
+</style>
