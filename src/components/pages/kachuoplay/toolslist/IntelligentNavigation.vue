@@ -68,6 +68,7 @@ export default {
         showLeftBack: true,
         showRightMore: true
       },
+      navIndex:'0',
       tabList: [
         "全景图",
         "登山图",
@@ -182,9 +183,9 @@ export default {
       this.path = this.SCENICSPOT;
       this.SCENICLINE = this.SCENICLINE;
       this.roadPath = this.SCENICLINE[0].path;
-      this.init();
+      this.init(this.mapCenter, this.path,this.navIndex);
     },
-    init() {
+    init(mapCenter,path,navIndex) {
       map = new AMap.Map("container", {
         center: this.mapCenter,
         resizeEnable: true,
@@ -197,16 +198,16 @@ export default {
       });
       let markers=[];
       map.clearMap();
-      let setmarker = new AMap.Marker({
-          icon: new AMap.Icon({            
-            image: inlocationIcon,
-            size: new AMap.Size(20,28),  //图标大小
-            imageSize: new AMap.Size(20,28)
-          }),
-          position:this.mapCenter,
-          offset: new AMap.Pixel(-13, -30)
-      });
-      setmarker.setMap(map);      
+      // let setmarker = new AMap.Marker({
+      //     icon: new AMap.Icon({            
+      //       image: inlocationIcon,
+      //       size: new AMap.Size(20,28),  //图标大小
+      //       imageSize: new AMap.Size(20,28)
+      //     }),
+      //     position:this.mapCenter,
+      //     offset: new AMap.Pixel(-13, -30)
+      // });
+      // setmarker.setMap(map);      
       //定位点
       var options = {
         'showButton': true,//是否显示定位按钮
@@ -217,7 +218,7 @@ export default {
         'showMarker': true,//是否显示定位点
         'markerOptions':{//自定义定位点样式，同Marker的Options
           'offset': new AMap.Pixel(-18, -36),
-           'content':'<img src="https://a.amap.com/jsapi_demos/static/resource/img/user.png" style="width:25px;height:25px"/>'
+          'content':`<img src=${inlocationIcon} style="width:25px;height:32px"/>`
         },
       }
       AMap.plugin(["AMap.ToolBar", "AMap.Scale","AMap.Geolocation","AMap.ControlBar"], function() {
@@ -232,7 +233,7 @@ export default {
         }))
         var geolocation = new AMap.Geolocation(options);
         map.addControl(geolocation);
-        geolocation.getCurrentPosition()
+        //geolocation.getCurrentPosition()
       });  
       if (this.roadPath.length) {  
         let loadPath=[];
@@ -257,38 +258,40 @@ export default {
               map: map,
               icon: new AMap.Icon({            
                 image: scenicIcon,
-                size: new AMap.Size(25,28),  //图标大小
-                imageSize: new AMap.Size(25,28)
+                size: new AMap.Size(30,35),  //图标大小
+                imageSize: new AMap.Size(30,35)
               }),
-              size: new AMap.Size(25,28),
+              size: new AMap.Size(30,35),
               position: [item.position[0], item.position[1]],
               offset: new AMap.Pixel(-13, -30)
             });            
             markers.push(marker)
             marker.setLabel({
-              offset: new AMap.Pixel(25, 28),
+              offset: new AMap.Pixel(30, 35),
               content: item.label
             });
             marker.on("click", item => {
               for (var i = 0; i < markers.length; i++) {
                   markers[i].setIcon(new AMap.Icon({            
                   image: scenicIcon,
-                  size: new AMap.Size(25,28),  //图标大小
-                  imageSize: new AMap.Size(25,28),
+                  size: new AMap.Size(30,35),  //图标大小
+                  imageSize: new AMap.Size(30,35),
                 offset: new AMap.Pixel(-13, -30),
                 }));
               }
               let con = item.target.Uh.label.content;
               marker.setIcon( new AMap.Icon({            
                   image: scenicActiveIcon,
-                  size: new AMap.Size(25,28),  //图标大小
-                  imageSize: new AMap.Size(25,28),
+                  size: new AMap.Size(30,35),  //图标大小
+                  imageSize: new AMap.Size(30,35),
                 offset: new AMap.Pixel(-13, -30),
                 }),)
               this.showModel(con,item.target.Uh.position);    
             });
             flag=true
           }
+
+
           // if (item.label.indexOf("卡戳文化艺术馆") != -1) {
           //   //规划路线
           //   var marker = new AMap.Marker({
@@ -316,7 +319,7 @@ export default {
           //     });
           // }
         });    
-        if(flag){   
+        if(flag&&navIndex>0){   
           let bezierCurve = new AMap.BezierCurve({
               path: this.roadPath,
               isOutline: true,
@@ -365,9 +368,10 @@ export default {
         });
     },
     showPath(index) {
+      this.navIndex= index;
       this.roadPath = [];
       this.roadPath = this.SCENICLINE[index].path;
-      this.init(this.mapCenter, this.path);
+      this.init(this.mapCenter, this.path,index);
     },
     showModel(name,position) {
       this.clickPosition = {

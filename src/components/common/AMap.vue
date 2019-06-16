@@ -14,18 +14,24 @@ let map = null,walking = null;
 import { getCurrentPositionByCurrentScenicId } from "@/assets/js/tools";
 import { getScenicMerchants } from "@/servers/api";
 import Popup from "@/components/common/PopupMerchants";
-import locationIcon from "@/assets/images/amap-icon/location-icon.png";
-import inlocationIcon from "@/assets/images/amap-icon/inlocation-icon.png";
-import cate from "@/assets/images/amap-icon/cate.png";
+import locationIcon from "@/assets/images/amap-icon/location-icon.png";  //定位按钮
+import inlocationIcon from "@/assets/images/amap-icon/inlocation-icon.png"; //当前位置
+import cate from "@/assets/images/amap-icon/cate.png";  //美食
 import cateActive from "@/assets/images/amap-icon/cateActive.png";
-import life from "@/assets/images/amap-icon/life.png";
+import life from "@/assets/images/amap-icon/life.png";  //休闲
 import lifeActive from "@/assets/images/amap-icon/lifeActive.png";
-import hotel from "@/assets/images/amap-icon/hotel.png";
+import hotel from "@/assets/images/amap-icon/hotel.png";//酒店
 import hotelActive from "@/assets/images/amap-icon/hotelActive.png";
-import recreation from "@/assets/images/amap-icon/recreation.png";
+import recreation from "@/assets/images/amap-icon/recreation.png";//娱乐
 import recreationActive from "@/assets/images/amap-icon/recreationActive.png";
-const iconArray=[cate,cateActive,life,lifeActive,hotel,hotelActive,recreation,recreationActive]
-
+import game from "@/assets/images/amap-icon/recreation.png";//玩吧
+import gameActive from "@/assets/images/amap-icon/recreationActive.png";
+import eat from "@/assets/images/amap-icon/eat.png";//吃吧
+import eatActive from "@/assets/images/amap-icon/eatActive.png";
+import drink from "@/assets/images/amap-icon/drink.png";//喝吧
+import drinkActive from "@/assets/images/amap-icon/drinkActive.png";
+const iconArray=[cate,cateActive,life,lifeActive,hotel,hotelActive,recreation,recreationActive,game,gameActive,eat,eatActive,drink,drinkActive]
+ 
 export default {
   name: "",
   props: ["mapHeight"],
@@ -65,7 +71,6 @@ export default {
         scenicid: sessionStorage.getItem("currentScenic"),
         type: type
       }).then(res => {
-          console.log(res);
           if (res.result === 1) {
             if (res.data.length) {
               for (let i = 0; i < res.data.length; i++) {
@@ -106,9 +111,17 @@ export default {
     },
     showMarker(markArr,type) {
       let markers=[],marker=null;
-      console.log(type)
       let normalIcon='',activeIcon=''
-      if(type==4){
+      if(type==1){
+        normalIcon=iconArray[8]
+        activeIcon=iconArray[9]
+      }else if(type==2){
+        normalIcon=iconArray[10]
+        activeIcon=iconArray[11]
+      }else if(type==3){
+        normalIcon=iconArray[12]
+        activeIcon=iconArray[13]
+      }else if(type==4){
         normalIcon=iconArray[0]
         activeIcon=iconArray[1]
       }else if(type==5){
@@ -225,7 +238,7 @@ export default {
         }))
         var geolocation = new AMap.Geolocation(options);
         map.addControl(geolocation);
-        geolocation.getCurrentPosition()
+       // geolocation.getCurrentPosition()
       });      
       // 获取标记点
       this.getMerchantsData(type);
