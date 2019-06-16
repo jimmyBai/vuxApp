@@ -206,8 +206,7 @@ export default {
           position:this.mapCenter,
           offset: new AMap.Pixel(-13, -30)
       });
-      setmarker.setMap(map);
-      
+      setmarker.setMap(map);      
       //定位点
       var options = {
         'showButton': true,//是否显示定位按钮
@@ -237,8 +236,15 @@ export default {
       });  
       if (this.roadPath.length) {  
         let loadPath=[];
+        let lng=null,lat=null
         this.roadPath.forEach((kpath,kindex)=>{
-          let{lng,lat}=kpath
+          if(Array.isArray(kpath)&&Object.prototype.toString.call(kpath) == '[object Array]'){
+            lng=kpath[0]
+            lat=kpath[1]
+          }else{
+            lng=kpath.lng
+            lat=kpath.lat
+          }
           if(lng&&lat){
             loadPath.push(lng+'&'+lat)
           }

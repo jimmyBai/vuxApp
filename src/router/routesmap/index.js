@@ -48,7 +48,7 @@ export default [
     component: resolve => require(['@/components/pages/kachuoplay/toolslist/TicketsDiscount'], resolve),
   },
   {
-    path: '/intelligentnavigation',
+    path: '/intelligentnavigation', 
     name: 'intelligentnavigation',
     component: resolve => require(['@/components/pages/kachuoplay/toolslist/IntelligentNavigation'], resolve),
   }, 
