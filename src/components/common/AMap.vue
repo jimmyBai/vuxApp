@@ -137,16 +137,20 @@ export default {
       markArr.forEach((item, index) => {
         marker = new AMap.Marker({
           icon: new AMap.Icon({            
-            image: normalIcon,
-            size: new AMap.Size(35,40),  //图标大小
-            imageSize: new AMap.Size(35,40),
+            image: activeIcon,
+            size: new AMap.Size(30,35),  //图标大小
+            imageSize: new AMap.Size(30,35),
+            anchor:[15,35], // 设置锚点方位
           }),
-          offset: new AMap.Pixel(-13, -30),
           position: [item.position[0], item.position[1]],
+          offset: new AMap.Pixel(-15,-35), //设置偏移量
+          label: {
+            anchor:'bottom-center', // 设置锚点方位
+            offset:  new AMap.Pixel(-15,-22)
+          }
         });    
         markers.push(marker)    
         marker.setLabel({
-          offset: new AMap.Pixel(10, 25),
           content:`<div>${ item.label }</div>`,
           id: item.id
         });

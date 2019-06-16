@@ -217,11 +217,11 @@ export default {
         'buttonOffset': new AMap.Pixel(10, 50),//定位按钮距离对应角落的距离
         'showMarker': true,//是否显示定位点
         'markerOptions':{//自定义定位点样式，同Marker的Options
-          'offset': new AMap.Pixel(-18, -36),
-          'content':`<img src=${inlocationIcon} style="width:25px;height:32px;background-color:none"/>`
+        'offset': new AMap.Pixel(-18, -36),
+        'content':`<img src=${inlocationIcon} style="width:25px;height:32px;background-color:none"/>`
         },
       }
-      AMap.plugin(["AMap.ToolBar", "AMap.Scale","AMap.Geolocation","AMap.ControlBar"], function() {
+      map.plugin(["AMap.ToolBar", "AMap.Scale","AMap.Geolocation","AMap.ControlBar"], function() {
         map.addControl(new AMap.ToolBar({
             // 简易缩放模式，默认为 false
             liteStyle: true
@@ -259,15 +259,18 @@ export default {
               icon: new AMap.Icon({            
                 image: scenicIcon,
                 size: new AMap.Size(30,35),  //图标大小
-                imageSize: new AMap.Size(30,35)
+                  anchor:[15,35], // 设置锚点方位
+                imageSize: new AMap.Size(30,35),
               }),
-              size: new AMap.Size(30,35),
               position: [item.position[0], item.position[1]],
-              offset: new AMap.Pixel(-13, -30)
+              offset: new AMap.Pixel(-15,-35), //设置偏移量
+              label: {
+                anchor:'bottom-center', // 设置锚点方位
+                offset:  new AMap.Pixel(0,-22)
+              }
             });            
             markers.push(marker)
             marker.setLabel({
-              offset: new AMap.Pixel(30, 35),
               content: item.label
             });
             marker.on("click", item => {
@@ -275,8 +278,7 @@ export default {
                   markers[i].setIcon(new AMap.Icon({            
                   image: scenicIcon,
                   size: new AMap.Size(30,35),  //图标大小
-                  imageSize: new AMap.Size(30,35),
-                offset: new AMap.Pixel(-13, -30),
+                  anchor:[15,35], // 设置锚点方位
                 }));
               }
               let con = item.target.Uh.label.content;
@@ -284,7 +286,7 @@ export default {
                   image: scenicActiveIcon,
                   size: new AMap.Size(30,35),  //图标大小
                   imageSize: new AMap.Size(30,35),
-                offset: new AMap.Pixel(-13, -30),
+                  anchor:[15,35], // 设置锚点方位
                 }),)
               this.showModel(con,item.target.Uh.position);    
             });
