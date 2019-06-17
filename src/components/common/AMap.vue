@@ -213,7 +213,9 @@ export default {
         resizeEnable: true,
         zoom: 16,   
         features: ["bg","road","building", 'point'],
-        pitch:60,
+        pitch:30,
+        rotateEnable:true,
+        pitchEnable:true,
         viewMode:'3D',//开启3D视图,默认为关闭
         buildingAnimation:true,//楼块出现是否带动画
         showBuildingBlock:true,
@@ -222,12 +224,12 @@ export default {
       var options = {
         'showButton': true,//是否显示定位按钮
         'buttonPosition': 'LB',//定位按钮的位置
-        'buttonDom':`<img src=${locationIcon} style="width:36px;height:36px";background-color:none"/>`,
+        'buttonDom':`<img src=${locationIcon} style="width:36px;height:36px;"/>`,
         'buttonOffset': new AMap.Pixel(10, 50),//定位按钮距离对应角落的距离
         'showMarker': true,//是否显示定位点
         'markerOptions':{//自定义定位点样式，同Marker的Options
           'offset': new AMap.Pixel(-18, -36),
-          'content':`<img src=${inlocationIcon} style="width:25px;height:32px";background-color:none"/>`
+          'content':`<img src=${inlocationIcon} style="width:25px;height:32px;background-color:transparent"/>`
         },
       }
       map.plugin(["AMap.ToolBar", "AMap.Scale","AMap.Geolocation","AMap.ControlBar"], function() {
